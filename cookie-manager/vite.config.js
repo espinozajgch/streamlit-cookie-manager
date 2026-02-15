@@ -1,34 +1,56 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => {
+  const isDev = mode === "development";
 
-  // Rutas relativas para funcionar correctamente detrás de Nginx
-  base: "./",
+  return {
+    plugins: [react()],
 
-  // Servidor de desarrollo (local)
-  server: {
-    host: "0.0.0.0",
-    port: 3001,
-    strictPort: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
+    // Importante para funcionar detrás de Nginx o CDN
+    base: "./",
+
+    // ==========================
+    // DEV SERVER
+    // ==========================
+    server: {
+      host: "0.0.0.0",
+      port: 3001,
+      strictPort: true,
+
+      // 🔓 Permite cualquier dominio en desarrollo
+      allowedHosts: true,
+
+      // Evita problemas si Streamlit está en otro dominio
+      cors: true,
+
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
     },
-  },
 
-  // Servidor de producción (npm run preview)
-  preview: {
-    host: "0.0.0.0",
-    port: 3001,
-    strictPort: true,
+    // ==========================
+    // PREVIEW (solo pruebas build)
+    // ==========================
+    preview: {
+      host: "0.0.0.0",
+      port: 3001,
+      strictPort: true,
 
-    // Muy importante para que no bloquee tu dominio
-    allowedHosts: ["components.duxleo.com"],
-  },
+      // 🔓 Permite cualquier host también en preview
+      allowedHosts: true,
+      cors: true,
+    },
 
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-  },
+    // ==========================
+    // BUILD PRODUCCIÓN
+    // ==========================
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
+      sourcemap: false,
+      minify: "esbuild",
+      target: "es2018",
+    },
+  };
 });

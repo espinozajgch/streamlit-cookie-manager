@@ -8,12 +8,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
-
-/**
-import TestPage from "./TestPage";
-
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <TestPage />
-  </React.StrictMode>
-);**/
