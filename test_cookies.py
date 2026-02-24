@@ -22,4 +22,16 @@ with col2:
 with col3:
     if st.button("DELETE"):
         resp = cookie_delete(cookie_name, cookieSecure=False)
-        st.write(resp)
+        st.rerun()
+        #st.write(resp)
+
+
+st.divider()
+
+value = cookie_get("MY_COOKIE", key="get_cookie")
+
+if st.button("Set cookie"):
+    cookie_set("MY_COOKIE", "cookie1233", key="set_cookie")
+    st.rerun()
+
+st.write("Cookie value:", value)

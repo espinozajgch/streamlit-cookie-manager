@@ -19,9 +19,10 @@ function buildCookie({ name, value, days, path = "/", sameSite, secure }) {
 }
 
 function getCookie(name) {
-  const encName = encodeURIComponent(name);
-  const match = document.cookie.match(new RegExp(`(^| )${encName}=([^;]+)`));
-  return match ? decodeURIComponent(match[2]) : null;
+  const encName = encodeURIComponent(name) + "=";
+  const cookies = document.cookie.split("; ");
+  const found = cookies.find(c => c.startsWith(encName));
+  return found ? decodeURIComponent(found.slice(encName.length)) : null;
 }
 
 function deleteCookie({ name, path = "/", sameSite, secure }) {
@@ -82,7 +83,7 @@ const CookieComponent = ({ args }) => {
         document.cookie = buildCookie({ name, value, days, path, sameSite: ss, secure });
         result = { ok: true, action: "set" }; // ACK inmediato
       } else if (action === "get") {
-        result = { ok: true, action: "get", value: getCookie(name) };
+        result = getCookie(name);
       } else if (action === "delete") {
         deleteCookie({ name, path, sameSite: ss, secure });
         result = { ok: true, action: "delete" }; // ACK inmediato
